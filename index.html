@@ -1,532 +1,1052 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAL3A SMART ERP</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
-<meta charset="UTF-8">
+    <style>
+        /* ==========================================================================
+           CSS Stylesheet (Combined)
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+        :root {
+            --bg: #070b17;
+            --panel: #101827;
+            --card: #182233;
+            --border: #263247;
+            --primary: #8b5cf6;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #ffffff;
+            --muted: #94a3b8;
+        }
 
-<title>
-TAL3A SMART ERP
-</title>
+        body {
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-<link rel="stylesheet"
-href="css/style.css">
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--panel);
+            border-left: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+        }
 
-<link rel="stylesheet"
-href="css/dashboard.css">
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--secondary);
+        }
 
-<link rel="stylesheet"
-href="css/mobile.css">
+        .sidebar button {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #182233;
+            color: white;
+            font-weight: 700;
+            text-align: right;
+            transition: .3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        .sidebar button:hover, .sidebar button.active {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            transform: translateX(-4px);
+        }
 
+        /* Main Workspace */
+        .main {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .page {
+            display: block;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Dashboard Content */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--panel);
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+        }
+
+        .card h3 {
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .card h2 {
+            font-size: 35px;
+            color: var(--secondary);
+        }
+
+        /* POS Layout */
+        .posLayout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 20px;
+            height: calc(100vh - 60px);
+        }
+
+        .productsArea {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .cartArea {
+            background: #111827;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #searchProduct {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            background:#182233;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        #productsGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .productCard {
+            background: #182233;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: .3s;
+        }
+
+        .productCard:hover {
+            border-color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .productCard h4 {
+            margin-bottom: 10px;
+        }
+
+        .productCard span {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: #233147;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        /* Cart Styles */
+        #cartItems {
+            flex: 1;
+            overflow: auto;
+            margin-top: 15px;
+        }
+
+        .cartItem {
+            background: #182233;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cartSummary {
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        .cartSummary button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 12px;
+            background: var(--success);
+            color: white;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        /* Forms & Inputs */
+        .form-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            background: #182233;
+            color: white;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-success { background: var(--success); }
+        .btn-primary { background: var(--primary); }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background: #182233;
+        }
+
+        th {
+            padding: 14px;
+            color: var(--secondary);
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: #111827;
+        }
+
+        /* Factory Stages Control */
+        .factoryBoard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .factoryBoard > div {
+            background: var(--panel);
+            padding: 15px;
+            border-radius: 15px;
+            min-height: 400px;
+            border: 1px solid var(--border);
+        }
+
+        .factoryBoard h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--secondary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        /* Reports Area */
+        #reportsArea {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        /* Statuses & Notifications */
+        .lowStock { color: var(--danger); font-weight: bold; }
+        .goodStock { color: var(--success); font-weight: bold; }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--panel);
+            padding: 15px 20px;
+            border-right: 5px solid var(--secondary);
+            border-radius: 12px;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Mobile Viewport Customization */
+        @media(max-width: 900px){
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; }
+            .logo { display: none; }
+            .sidebar button { padding: 10px; font-size: 12px; white-space: nowrap; }
+            .posLayout { grid-template-columns: 1fr; height: auto; }
+            .cartArea { margin-top: 10px; }
+            .cards, .factoryBoard { grid-template-columns: 1fr; }
+            table { display: none; }
+            .mobileCard {
+                display: block;
+                background: var(--panel);
+                padding: 15px;
+                border-radius: 15px;
+                margin-bottom: 10px;
+                border: 1px solid var(--border);
+            }
+        }
+
+        /* Global Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #101827; }
+        ::-webkit-scrollbar-thumb { background: #263247; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b4a63; }
+    </style>
 </head>
-
 <body>
 
-<div class="sidebar">
-
-<div class="logo">
-
-<i class="fa-solid fa-shirt"></i>
-
-طَلَّة ERP
-
-</div>
-
-<button onclick="showPage('dashboard')">
-
-<i class="fa-solid fa-chart-line"></i>
-
-لوحة التحكم
-
-</button>
-
-<button onclick="showPage('pos')">
-
-<i class="fa-solid fa-cash-register"></i>
-
-الكاشير
-
-</button>
-
-<button onclick="showPage('inventory')">
-
-<i class="fa-solid fa-box"></i>
-
-المخزن
-
-</button>
-
-<button onclick="showPage('customers')">
-
-<i class="fa-solid fa-users"></i>
-
-العملاء
-
-</button>
-
-<button onclick="showPage('factory')">
-
-<i class="fa-solid fa-industry"></i>
-
-المصنع
-
-</button>
-
-<button onclick="showPage('tailors')">
-
-<i class="fa-solid fa-scissors"></i>
-
-الترزية
-
-</button>
-
-<button onclick="showPage('reports')">
-
-<i class="fa-solid fa-file"></i>
-
-التقارير
-
-</button>
-
-<button onclick="showPage('settings')">
-
-<i class="fa-solid fa-gear"></i>
-
-الإعدادات
-
-</button>
-
-</div>
-
-<div class="main">
-
-<!-- Dashboard -->
-
-<section id="dashboard"
-class="page">
-
-<h1>
-
-لوحة التحكم
-
-</h1>
-
-<div class="cards">
-
-<div class="card">
-
-<h3>مبيعات اليوم</h3>
-
-<h2 id="todaySales">
-
-0
-
-</h2>
-
-</div>
-
-<div class="card">
-
-<h3>الأرباح</h3>
-
-<h2 id="todayProfit">
-
-0
-
-</h2>
-
-</div>
-
-<div class="card">
-
-<h3>الفواتير</h3>
-
-<h2 id="todayInvoices">
-
-0
-
-</h2>
-
-</div>
-
-<div class="card">
-
-<h3>النواقص</h3>
-
-<h2 id="lowStock">
-
-0
-
-</h2>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- POS -->
-
-<section id="pos"
-class="page hidden">
-
-<div class="posLayout">
-
-<div class="productsArea">
-
-<input
-id="searchProduct"
-placeholder="بحث سريع">
-
-<div
-id="productsGrid">
-
-</div>
-
-</div>
-
-<div class="cartArea">
-
-<h2>
-
-سلة البيع
-
-</h2>
-
-<div
-id="cartItems">
-
-</div>
-
-<div class="cartSummary">
-
-<h3>
-
-الإجمالي:
-
-<span id="cartTotal">
-
-0
-
-</span>
-
-</h3>
-
-<button
-onclick="checkout()">
-
-إتمام البيع
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- Inventory -->
-
-<section
-id="inventory"
-class="page hidden">
-
-<h1>
-
-إدارة المخزن
-
-</h1>
-
-<input
-id="productName"
-placeholder="اسم المنتج">
-
-<input
-id="productColor"
-placeholder="اللون">
-
-<input
-id="productSize"
-placeholder="المقاس">
-
-<input
-id="productCost"
-placeholder="التكلفة">
-
-<input
-id="productPrice"
-placeholder="سعر البيع">
-
-<input
-id="productQty"
-placeholder="الكمية">
-
-<button
-onclick="saveProduct()">
-
-حفظ
-
-</button>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>المنتج</th>
-
-<th>اللون</th>
-
-<th>المقاس</th>
-
-<th>الكمية</th>
-
-<th>السعر</th>
-
-</tr>
-
-</thead>
-
-<tbody
-id="inventoryTable">
-
-</tbody>
-
-</table>
-
-</section>
-
-<!-- Customers -->
-
-<section
-id="customers"
-class="page hidden">
-
-<h1>
-
-العملاء
-
-</h1>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>الاسم</th>
-
-<th>الهاتف</th>
-
-<th>النقاط</th>
-
-<th>VIP</th>
-
-</tr>
-
-</thead>
-
-<tbody
-id="customersTable">
-
-</tbody>
-
-</table>
-
-</section>
-
-<!-- Factory -->
-
-<section
-id="factory"
-class="page hidden">
-
-<h1>
-
-إدارة المصنع
-
-</h1>
-
-<div class="factoryBoard">
-
-<div>
-
-<h3>
-
-قص
-
-</h3>
-
-<div
-id="cutStage">
-
-</div>
-
-</div>
-
-<div>
-
-<h3>
-
-خياطة
-
-</h3>
-
-<div
-id="sewStage">
-
-</div>
-
-</div>
-
-<div>
-
-<h3>
-
-تشطيب
-
-</h3>
-
-<div
-id="finishStage">
-
-</div>
-
-</div>
-
-<div>
-
-<h3>
-
-جاهز
-
-</h3>
-
-<div
-id="readyStage">
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- Tailors -->
-
-<section
-id="tailors"
-class="page hidden">
-
-<h1>
-
-الترزية
-
-</h1>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>الاسم</th>
-
-<th>المستلم</th>
-
-<th>المسلم</th>
-
-<th>المستحق</th>
-
-</tr>
-
-</thead>
-
-<tbody
-id="tailorsTable">
-
-</tbody>
-
-</table>
-
-</section>
-
-<!-- Reports -->
-
-<section
-id="reports"
-class="page hidden">
-
-<h1>
-
-التقارير
-
-</h1>
-
-<div
-id="reportsArea">
-
-</div>
-
-</section>
-
-<!-- Settings -->
-
-<section
-id="settings"
-class="page hidden">
-
-<h1>
-
-الإعدادات
-
-</h1>
-
-<input
-id="storeName"
-placeholder="اسم المتجر">
-
-<button>
-
-حفظ
-
-</button>
-
-</section>
-
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<script src="js/firebase.js"></script>
-
-<script src="js/app.js"></script>
-
-<script src="js/dashboard.js"></script>
-
-<script src="js/pos.js"></script>
-
-<script src="js/inventory.js"></script>
-
-<script src="js/customers.js"></script>
-
-<script src="js/factory.js"></script>
-
-<script src="js/tailors.js"></script>
-
-<script src="js/reports.js"></script>
-
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-shirt"></i> طَلَّة ERP
+        </div>
+        <button id="btn-dashboard" onclick="showPage('dashboard')"><i class="fa-solid fa-chart-line"></i> لوحة التحكم</button>
+        <button id="btn-pos" onclick="showPage('pos')"><i class="fa-solid fa-cash-register"></i> الكاشير</button>
+        <button id="btn-inventory" onclick="showPage('inventory')"><i class="fa-solid fa-box"></i> المخزن</button>
+        <button id="btn-customers" onclick="showPage('customers')"><i class="fa-solid fa-users"></i> العملاء</button>
+        <button id="btn-factory" onclick="showPage('factory')"><i class="fa-solid fa-industry"></i> المصنع</button>
+        <button id="btn-tailors" onclick="showPage('tailors')"><i class="fa-solid fa-scissors"></i> الترزية</button>
+        <button id="btn-reports" onclick="showPage('reports')"><i class="fa-solid fa-file"></i> التقارير</button>
+        <button id="btn-settings" onclick="showPage('settings')"><i class="fa-solid fa-gear"></i> الإعدادات</button>
+        <div id="liveClock" style="font-size: 11px; text-align: center; color: var(--secondary); margin-top: auto; font-weight: bold; padding: 5px;"></div>
+    </div>
+
+    <div class="main">
+
+        <section id="dashboard" class="page">
+            <h1>لوحة التحكم الحية</h1>
+            <div class="cards">
+                <div class="card">
+                    <h3>مبيعات اليوم</h3>
+                    <h2 id="todaySales">0 ج</h2>
+                </div>
+                <div class="card">
+                    <h3>الأرباح الكلية</h3>
+                    <h2 id="todayProfit">0 ج</h2>
+                </div>
+                <div class="card">
+                    <h3>عدد الفواتير</h3>
+                    <h2 id="todayInvoices">0</h2>
+                </div>
+                <div class="card">
+                    <h3>النواقص بالمخزن</h3>
+                    <h2 id="lowStock" class="lowStock">0</h2>
+                </div>
+            </div>
+        </section>
+
+        <section id="pos" class="page hidden">
+            <div class="posLayout">
+                <div class="productsArea">
+                    <input id="searchProduct" placeholder="ابحث هنا عن الموديل أو مرر الباركود..." oninput="searchProducts()">
+                    <div id="productsGrid"></div>
+                </div>
+                <div class="cartArea">
+                    <h2>سلة البيع الحالية</h2>
+                    <div id="cartItems"></div>
+                    <div class="cartSummary">
+                        <input id="posCustomerPhone" placeholder="رقم هاتف العميل لنقاط الولاء (اختياري)" style="margin-bottom: 10px;">
+                        <h3>الإجمالي المطلوب: <span id="cartTotal" style="color:var(--success);">0</span> ج</h3>
+                        <button onclick="checkout()">إتمام عملية البيع وطباعة الفاتورة</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="inventory" class="page hidden">
+            <h1>إدارة المخزن والمصفوفات</h1>
+            <div class="form-group">
+                <input id="productName" placeholder="اسم الموديل">
+                <input id="productColor" placeholder="اللون">
+                <input id="productSize" placeholder="المقاس">
+            </div>
+            <div class="form-group">
+                <input id="productCost" type="number" placeholder="تكلفة التصنيع">
+                <input id="productPrice" type="number" placeholder="سعر البيع">
+                <input id="productQty" type="number" placeholder="الكمية المتاحة">
+            </div>
+            <div class="form-group">
+                <input id="productBarcode" placeholder="الباركود (اتركه فارغاً للتوليد التلقائي)">
+                <button class="btn btn-success" onclick="saveProduct()">حفظ الصنف بالمخزن</button>
+            </div>
+            
+            <div id="inventoryMobileContainer"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الباركود</th>
+                        <th>المنتج</th>
+                        <th>اللون</th>
+                        <th>المقاس</th>
+                        <th>الكمية</th>
+                        <th>التكلفة</th>
+                        <th>السعر</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTable"></tbody>
+            </table>
+        </section>
+
+        <section id="customers" class="page hidden">
+            <h1>سجل العملاء ونقاط الولاء</h1>
+            <div id="customersMobileContainer"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الهاتف</th>
+                        <th>النقاط الحالية</th>
+                        <th>فئة العميل (VIP)</th>
+                    </tr>
+                </thead>
+                <tbody id="customersTable"></tbody>
+            </table>
+        </section>
+
+        <section id="factory" class="page hidden">
+            <h1>خطوط إنتاج المصنع</h1>
+            <div class="form-group" style="margin-top:15px;">
+                <input id="factoryItemName" placeholder="اسم القطعة تحت التشغيل">
+                <input id="factoryItemQty" type="number" placeholder="الكمية الإجمالية">
+                <button class="btn btn-primary" onclick="addFactoryItem()">ضخ خط إنتاج جديد</button>
+            </div>
+            <div class="factoryBoard">
+                <div>
+                    <h3>مرحلة القص</h3>
+                    <div id="cutStage"></div>
+                </div>
+                <div>
+                    <h3>مرحلة الخياطة</h3>
+                    <div id="sewStage"></div>
+                </div>
+                <div>
+                    <h3>مرحلة التشطيب</h3>
+                    <div id="finishStage"></div>
+                </div>
+                <div>
+                    <h3>جاهز ومعتمد</h3>
+                    <div id="readyStage"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tailors" class="page hidden">
+            <h1>مستحقات الترزية والفنيين</h1>
+            <div class="form-group" style="margin-top: 15px;">
+                <input id="tailorName" placeholder="اسم الترزي">
+                <input id="tailorQtyReceived" type="number" placeholder="القطع المستلمة للعمل">
+                <input id="tailorPricePerPiece" type="number" placeholder="أجرة القطعة">
+                <button class="btn btn-primary" onclick="addTailorJob()">تسجيل العملية</button>
+            </div>
+            <div id="tailorsMobileContainer"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الترزي</th>
+                        <th>القطع المستلمة</th>
+                        <th>القطع المسلمة الجاهزة</th>
+                        <th>المستحق المالي</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="tailorsTable"></tbody>
+            </table>
+        </section>
+
+        <section id="reports" class="page hidden">
+            <h1>تقارير المبيعات الشاملة</h1>
+            <div id="reportsArea"></div>
+        </section>
+
+        <section id="settings" class="page hidden">
+            <h1>إعدادات المنظومة السحابية</h1>
+            <div class="form-group" style="max-width: 400px; margin-top: 20px;">
+                <input id="storeName" placeholder="اسم المتجر">
+                <button class="btn btn-primary" onclick="triggerSaveSettings()">حفظ الإعدادات</button>
+            </div>
+            <div class="form-group" style="max-width: 400px; margin-top: 20px;">
+                <button class="btn btn-success" onclick="exportData()">تصدير نسخة احتياطية (JSON)</button>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Realtime Firebase Initialization
+        const firebaseConfig = {
+            databaseURL: "https://mama-c6e6b-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Database Collections References
+        const productsRef = db.ref("products");
+        const salesRef = db.ref("sales");
+        const customersRef = db.ref("customers");
+        const tailorsRef = db.ref("tailors");
+        const factoryRef = db.ref("factory");
+        const settingsRef = db.ref("settings");
+
+        // Global System State
+        window.products = {};
+        window.sales = {};
+        window.customers = {};
+        window.tailors = {};
+        window.factoryItems = {};
+        window.cart = [];
+
+        /* --- Global Startup Init --- */
+        window.onload = () => {
+            let lastPage = localStorage.getItem("lastPage") || "dashboard";
+            showPage(lastPage);
+            startClock();
+            loadCache();
+            initRealtimeListeners();
+        };
+
+        function initRealtimeListeners() {
+            // Live Synchronizer for Products
+            productsRef.on("value", snapshot => {
+                window.products = snapshot.val() || {};
+                renderInventory();
+                renderProducts();
+                updateDashboard();
+            });
+
+            // Live Synchronizer for Sales
+            salesRef.on("value", snapshot => {
+                window.sales = snapshot.val() || {};
+                renderSales();
+                updateDashboard();
+            });
+
+            // Live Synchronizer for Customers
+            customersRef.on("value", snapshot => {
+                window.customers = snapshot.val() || {};
+                renderCustomers();
+            });
+
+            // Live Synchronizer for Tailors
+            tailorsRef.on("value", snapshot => {
+                window.tailors = snapshot.val() || {};
+                renderTailors();
+            });
+
+            // Live Synchronizer for Factory Workflows
+            factoryRef.on("value", snapshot => {
+                window.factoryItems = snapshot.val() || {};
+                renderFactory();
+            });
+
+            // Global Configuration Init
+            settingsRef.once("value").then(snapshot => {
+                window.storeSettings = snapshot.val() || {};
+                if(window.storeSettings.storeName) {
+                    document.getElementById("storeName").value = window.storeSettings.storeName;
+                }
+            });
+        }
+
+        /* --- Navigation Controller --- */
+        function showPage(pageId) {
+            document.querySelectorAll(".page").forEach(page => page.classList.add("hidden"));
+            document.querySelectorAll(".sidebar button").forEach(btn => btn.classList.remove("active"));
+            
+            const targetPage = document.getElementById(pageId);
+            const targetBtn = document.getElementById("btn-" + pageId);
+            
+            if (targetPage) targetPage.classList.remove("hidden");
+            if (targetBtn) targetBtn.classList.add("active");
+            
+            localStorage.setItem("lastPage", pageId);
+        }
+
+        /* --- View Renderer: Inventory Management --- */
+        function saveProduct() {
+            let name = document.getElementById("productName").value.trim();
+            let color = document.getElementById("productColor").value.trim();
+            let size = document.getElementById("productSize").value.trim();
+            let cost = Number(document.getElementById("productCost").value) || 0;
+            let price = Number(document.getElementById("productPrice").value) || 0;
+            let qty = Number(document.getElementById("productQty").value) || 0;
+            let barcode = document.getElementById("productBarcode").value.trim();
+
+            if (!name || !color || !size || price <= 0) {
+                return toast("برجاء إدخال تفاصيل الصنف الأساسية والسعر!");
+            }
+
+            if (!barcode) barcode = "TL" + Math.floor(100000 + Math.random() * 900000);
+            let id = "PRD_" + Date.now();
+
+            productsRef.child(id).set({ id, name, color, size, cost, price, qty, barcode }).then(() => {
+                toast("تم حفظ الصنف وتكويده بنجاح بالمخزن حياً!");
+                // Clear Input fields
+                ["productName", "productColor", "productSize", "productCost", "productPrice", "productQty", "productBarcode"].forEach(id => {
+                    document.getElementById(id).value = "";
+                });
+            });
+        }
+
+        function renderInventory() {
+            let tbody = document.getElementById("inventoryTable");
+            let mobileContainer = document.getElementById("inventoryMobileContainer");
+            tbody.innerHTML = "";
+            mobileContainer.innerHTML = "";
+
+            Object.values(window.products).forEach(p => {
+                let tr = document.createElement("tr");
+                let qtyClass = p.qty <= 5 ? "lowStock" : "goodStock";
+                tr.innerHTML = `
+                    <td><code>${p.barcode}</code></td>
+                    <td><b>${p.name}</b></td>
+                    <td>${p.color}</td>
+                    <td>${p.size}</td>
+                    <td class="${qtyClass}">${p.qty} قطة</td>
+                    <td>${money(p.cost)}</td>
+                    <td>${money(p.price)}</td>
+                `;
+                tbody.appendChild(tr);
+
+                // Mobile Card View
+                mobileContainer.innerHTML += createMobileCard(
+                    `${p.name} (${p.color} - ${p.size})`,
+                    `الكمية: <span class="${qtyClass}">${p.qty}</span> | السعر: ${money(p.price)} <br><small>الباركود: ${p.barcode}</small>`
+                );
+            });
+        }
+
+        /* --- View Renderer: Point Of Sale (POS) --- */
+        function renderProducts() {
+            let grid = document.getElementById("productsGrid");
+            grid.innerHTML = "";
+            Object.values(window.products).forEach(p => {
+                if(p.qty > 0) {
+                    let card = document.createElement("div");
+                    card.className = "productCard";
+                    card.dataset.name = p.name;
+                    card.onclick = () => addToCart(p.id);
+                    card.innerHTML = `
+                        <h4>${p.name}</h4>
+                        <span>${p.color}</span>
+                        <span>${p.size}</span>
+                        <div style="margin-top:10px; font-weight:bold; color:var(--secondary);">${money(p.price)}</div>
+                        <small style="color:var(--muted)">المتاح: ${p.qty} قطعة</small>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function addToCart(id) {
+            let product = window.products[id];
+            if (!product || product.qty <= 0) return toast("الصنف غير متوفر بالمخزن!");
+
+            let cartItem = window.cart.find(item => item.id === id);
+            if (cartItem) {
+                if (cartItem.qty + 1 > product.qty) return toast("تجاوزت الكمية المتاحة بالرفوف!");
+                cartItem.qty++;
+            } else {
+                window.cart.push({ id: id, name: product.name, price: product.price, qty: 1, cost: product.cost });
+            }
+            renderCart();
+        }
+
+        function removeFromCart(id) {
+            window.cart = window.cart.filter(item => item.id !== id);
+            renderCart();
+        }
+
+        function renderCart() {
+            let container = document.getElementById("cartItems");
+            container.innerHTML = "";
+            let total = 0;
+
+            window.cart.forEach(item => {
+                total += (item.price * item.qty);
+                let div = document.createElement("div");
+                div.className = "cartItem";
+                div.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        <small>${money(item.price)} × ${item.qty}</small>
+                    </div>
+                    <button onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+                `;
+                container.appendChild(div);
+            });
+            document.getElementById("cartTotal").innerText = total;
+        }
+
+        function checkout() {
+            if (window.cart.length === 0) return toast("سلة المبيعات فارغة!");
+            
+            let total = 0;
+            let profit = 0;
+            let phone = document.getElementById("posCustomerPhone").value.trim();
+
+            window.cart.forEach(item => {
+                total += (item.price * item.qty);
+                profit += ((item.price - item.cost) * item.qty);
+                
+                // Deduct Inventory Realtime
+                let newQty = (window.products[item.id].qty || 0) - item.qty;
+                productsRef.child(item.id).update({ qty: newQty });
+            });
+
+            let invoiceId = "INV_" + Date.now();
+            let invoice = { id: invoiceId, total, profit, timestamp: new Date().toISOString(), items: window.cart };
+
+            salesRef.child(invoiceId).set(invoice).then(() => {
+                if (phone) {
+                    let earnedPoints = Math.floor(total / 10);
+                    addPoints(phone, earnedPoints);
+                }
+                toast("✅ تمت عملية البيع وحُفظت الفاتورة بنجاح!");
+                window.cart = [];
+                document.getElementById("posCustomerPhone").value = "";
+                renderCart();
+            });
+        }
+
+        /* --- View Renderer: Customer Profiles --- */
+        function renderCustomers() {
+            let tbody = document.getElementById("customersTable");
+            let mobileContainer = document.getElementById("customersMobileContainer");
+            tbody.innerHTML = "";
+            mobileContainer.innerHTML = "";
+
+            Object.values(window.customers).forEach(c => {
+                let status = getVipStatus(c.points);
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><b>${c.phone}</b></td>
+                    <td>${c.points || 0}</td>
+                    <td style="font-weight:bold; color:var(--warning);">${status}</td>
+                `;
+                tbody.appendChild(tr);
+
+                mobileContainer.innerHTML += createMobileCard(c.phone, `النقاط: ${c.points || 0} | الفئة: ${status}`);
+            });
+        }
+
+        /* --- View Renderer: Factory Stages --- */
+        function addFactoryItem() {
+            let name = document.getElementById("factoryItemName").value.trim();
+            let qty = Number(document.getElementById("factoryItemQty").value) || 0;
+
+            if(!name || qty <= 0) return toast("أدخل اسم القطعة والكمية لبدء تشغيل المصنع!");
+
+            let id = "FAC_" + Date.now();
+            factoryRef.child(id).set({ id, name, qty, stage: "cut" }).then(() => {
+                toast("تم ضخ القطع لخط القص الحلي!");
+                document.getElementById("factoryItemName").value = "";
+                document.getElementById("factoryItemQty").value = "";
+            });
+        }
+
+        function renderFactory() {
+            const stages = { cut: "cutStage", sew: "sewStage", finish: "finishStage", ready: "readyStage" };
+            Object.values(stages).forEach(id => document.getElementById(id).innerHTML = "");
+
+            Object.values(window.factoryItems).forEach(item => {
+                let div = document.createElement("div");
+                div.style = "background:#182233; padding:10px; border-radius:10px; margin-bottom:8px; border:1px solid var(--border);";
+                div.innerHTML = `
+                    <strong>${item.name}</strong> <small>(${item.qty} ق)</small>
+                    <div style="margin-top:8px; display:flex; gap:4px;">
+                        ${item.stage !== 'ready' ? `<button onclick="nextStage('${item.id}', '${item.stage}')" style="background:var(--primary); color:white; font-size:11px; padding:3px 6px; border:none; border-radius:5px;">ترقية <i class="fa-solid fa-arrow-left"></i></button>` : ''}
+                        <button onclick="deleteFactoryItem('${item.id}')" style="background:var(--danger); color:white; font-size:11px; padding:3px 6px; border:none; border-radius:5px;"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                let targetContainer = document.getElementById(stages[item.stage]);
+                if(targetContainer) targetContainer.appendChild(div);
+            });
+        }
+
+        function nextStage(id, currentStage) {
+            const nextMap = { cut: "sew", sew: "finish", finish: "ready" };
+            if(nextMap[currentStage]) {
+                factoryRef.child(id).update({ stage: nextMap[currentStage] });
+            }
+        }
+
+        function deleteFactoryItem(id) {
+            factoryRef.child(id).remove();
+        }
+
+        /* --- View Renderer: Tailors Management --- */
+        function addTailorJob() {
+            let name = document.getElementById("tailorName").value.trim();
+            let qty = Number(document.getElementById("tailorQtyReceived").value) || 0;
+            let price = Number(document.getElementById("tailorPricePerPiece").value) || 0;
+
+            if(!name || qty <= 0 || price <= 0) return toast("أدخل تفاصيل مستحقات الفني بالكامل!");
+
+            let id = "TLR_" + Date.now();
+            let due = qty * price;
+            tailorsRef.child(id).set({ id, name, received: qty, delivered: 0, due }).then(() => {
+                toast("تم إدراج مستند تشغيل الترزي!");
+                document.getElementById("tailorName").value = "";
+                document.getElementById("tailorQtyReceived").value = "";
+                document.getElementById("tailorPricePerPiece").value = "";
+            });
+        }
+
+        function renderTailors() {
+            let tbody = document.getElementById("tailorsTable");
+            let mobileContainer = document.getElementById("tailorsMobileContainer");
+            tbody.innerHTML = "";
+            mobileContainer.innerHTML = "";
+
+            Object.values(window.tailors).forEach(t => {
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><b>${t.name}</b></td>
+                    <td>${t.received} قطعة</td>
+                    <td>${t.delivered || 0} قطعة</td>
+                    <td style="color:var(--warning); font-weight:bold;">${money(t.due)}</td>
+                    <td>
+                        <button onclick="markTailorDelivered('${t.id}', ${t.received})" style="background:var(--success); border:none; color:white; padding:5px 10px; border-radius:6px; font-weight:bold;">تسليم واقـفال</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                mobileContainer.innerHTML += createMobileCard(t.name, `المستحق: ${money(t.due)} | المستلم: ${t.received} ق`);
+            });
+        }
+
+        function markTailorDelivered(id, qty) {
+            tailorsRef.child(id).update({ delivered: qty, due: 0 }).then(() => toast("تم تسوية حساب الفني وتقفيل المستند."));
+        }
+
+        /* --- View Renderer: Analytical Reports --- */
+        function renderSales() {
+            let container = document.getElementById("reportsArea");
+            container.innerHTML = "";
+
+            Object.values(window.sales).forEach(s => {
+                let div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <h3>رقم الإيصال: ${s.id.substring(4, 12)}</h3>
+                    <p style="font-size:12px; color:var(--muted);">${new Date(s.timestamp).toLocaleString("ar-EG")}</p>
+                    <h2 style="color:var(--success); font-size:22px; margin:8px 0;">${money(s.total)}</h2>
+                    <small style="color:var(--secondary)">صافي الربح: ${money(s.profit)}</small>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        /* --- Global Mathematical Calculations --- */
+        function getTotalSales() {
+            let total = 0;
+            Object.values(window.sales).forEach(s => total += Number(s.total || 0));
+            return total;
+        }
+
+        function getTotalProfit() {
+            let total = 0;
+            Object.values(window.sales).forEach(s => total += Number(s.profit || 0));
+            return total;
+        }
+
+        function getInvoicesCount() { return Object.keys(window.sales).length; }
+
+        function getLowStockCount() {
+            let count = 0;
+            Object.values(window.products).forEach(p => { if (Number(p.qty) <= 5) count++; });
+            return count;
+        }
+
+        function addPoints(phone, points) {
+            if (!phone) return;
+            customersRef.child(phone).once("value").then(snapshot => {
+                let customer = snapshot.val() || { phone: phone, points: 0 };
+                customer.points = (customer.points || 0) + points;
+                customersRef.child(phone).set(customer);
+            });
+        }
+
+        function getVipStatus(points) {
+            if (points >= 1000) return "👑 VIP مـاسي";
+            if (points >= 500) return "⭐ ذهـبي";
+            if (points >= 200) return "✨ فـضي";
+            return "عادي";
+        }
+
+        function updateDashboard() {
+            let s = document.getElementById("todaySales");
+            let p = document.getElementById("todayProfit");
+            let i = document.getElementById("todayInvoices");
+            let l = document.getElementById("lowStock");
+
+            if (s) s.innerText = money(getTotalSales());
+            if (p) p.innerText = money(getTotalProfit());
+            if (i) i.innerText = getInvoicesCount();
+            if (l) l.innerText = getLowStockCount();
+        }
+
+        /* --- Peripheral Hardware Integrations (Barcode Scanner) --- */
+        let barcodeBuffer = "";
+        document.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                if (barcodeBuffer.length > 4) {
+                    searchByBarcode(barcodeBuffer);
+                }
+                barcodeBuffer = "";
+                return;
+            }
+            // Filter non-printable keys
+            if (event.key.length === 1) {
+                barcodeBuffer += event.key;
+            }
+        });
+
+        function searchByBarcode(barcode) {
+            let found = Object.values(window.products).find(p => p.barcode === barcode);
+            if (found) {
+                addToCart(found.id);
+                toast(`🛒 تم إضافة الموديل: ${found.name}`);
+            } else {
+                toast("⚠️ الباركود غير مسجل بالمصفوفة!");
+            }
+        }
+
+        function searchProducts() {
+            let text = document.getElementById("searchProduct").value.toLowerCase();
+            document.querySelectorAll(".productCard").forEach(card => {
+                let name = card.dataset.name.toLowerCase();
+                card.style.display = name.includes(text) ? "block" : "none";
+            });
+        }
+
+        /* --- Localization, Clock & System Formatting Helpers --- */
+        function startClock() {
+            setInterval(() => {
+                let el = document.getElementById("liveClock");
+                if (el) el.innerText = new Date().toLocaleString("ar-EG");
+            }, 1000);
+        }
+
+        function money(value) {
+            return Number(value || 0).toLocaleString("ar-EG") + " ج";
+        }
+
+        function toast(message) {
+            let old = document.querySelector(".toast");
+            if (old) old.remove();
+            let div = document.createElement("div");
+            div.className = "toast";
+            div.innerText = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        function createMobileCard(title, value) {
+            return `<div class="mobileCard"><h3>${title}</h3><p>${value}</p></div>`;
+        }
+
+        function triggerSaveSettings() {
+            let storeName = document.getElementById("storeName").value.trim();
+            settingsRef.set({ storeName }).then(() => toast("تم حفظ وتحديث إعدادات المتجر السحابي."));
+        }
+
+        /* --- Data Redundancy: Local Cache & Backups --- */
+        function saveCache() {
+            localStorage.setItem("productsCache", JSON.stringify(window.products));
+            localStorage.setItem("salesCache", JSON.stringify(window.sales));
+        }
+
+        function loadCache() {
+            let pCache = localStorage.getItem("productsCache");
+            let sCache = localStorage.getItem("salesCache");
+            if (pCache) window.products = JSON.parse(pCache);
+            if (sCache) window.sales = JSON.parse(sCache);
+        }
+
+        setInterval(saveCache, 60000); // Auto Cache update every 60 seconds
+
+        function exportData() {
+            let backup = { products: window.products, sales: window.sales, customers: window.customers, tailors: window.tailors, factory: window.factoryItems };
+            let blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = `TAL3A_SMART_ERP_BACKUP_${Date.now()}.json`;
+            a.click();
+            toast("💾 تم استخراج نسخة احتياطية مشفرة بنجاح!");
+        }
+
+        // Live Network Watchers
+        window.addEventListener("online", () => toast("🟢 متصل بالخادم السحابي - المزامنة نشطة"));
+        window.addEventListener("offline", () => toast("🔴 انقطع الاتصال - يعمل الآن على المخزن المؤقت"));
+    </script>
 </body>
 </html>
